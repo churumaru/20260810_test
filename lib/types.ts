@@ -1,0 +1,45 @@
+export type Intent = "must" | "maybe";
+
+export type TimeSlot = "morning" | "forenoon" | "afternoon" | "evening";
+
+export type Area =
+  | "shibuya"
+  | "shinjuku"
+  | "shinagawa"
+  | "ariake"
+  | "setagaya"
+  | "meguro";
+
+export type Player = {
+  id: string;
+  name: string;
+  initials: string;
+  level: string;
+  intent: Intent;
+  /** 今日からの日数オフセット */
+  dayOffsets: number[];
+  timeSlots: TimeSlot[];
+  areas: Area[];
+  comment: string;
+};
+
+export type CourtEvent = {
+  id: string;
+  title: string;
+  dayOffset: number;
+  time: string;
+  venue: string;
+  level: string;
+  capacity: number;
+  joined: number;
+  fee: number;
+};
+
+export type PlayRequest = {
+  intent: Intent;
+  /** YYYY-MM-DD */
+  dates: string[];
+  timeSlots: TimeSlot[];
+  areas: Area[];
+  updatedAt: string;
+};
