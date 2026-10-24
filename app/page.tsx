@@ -2,21 +2,23 @@
 
 import { useMemo } from "react";
 import Link from "next/link";
-import { Bell, ChevronRight, PenLine } from "lucide-react";
+import { CalendarCheck, ChevronRight, PenLine } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { DateStrip } from "@/components/DateStrip";
 import { PlayerCard } from "@/components/PlayerCard";
 import { MyRequestCard } from "@/components/MyRequestCard";
 import { EventCard } from "@/components/EventCard";
 import { BottomNav } from "@/components/BottomNav";
+import { NotificationBell } from "@/components/NotificationBell";
 import { EVENTS, PLAYERS } from "@/lib/mock";
-import { formatJa, fromKey, offsetToKey, toKey, upcomingDays } from "@/lib/date";
+import { formatJa, formatShort, fromKey, offsetToKey, toKey, upcomingDays } from "@/lib/date";
+import { TIME_SLOTS } from "@/lib/constants";
 import { useStore } from "@/lib/store";
 
 const DAYS_AHEAD = 14;
 
 export default function HomePage() {
-  const { ready, request, selectedDate, setSelectedDate } = useStore();
+  const { ready, request, selectedDate, setSelectedDate, invitations, joinedEvents } = useStore();
 
   const today = useMemo(() => new Date(), []);
   const days = useMemo(() => upcomingDays(DAYS_AHEAD, today), [today]);
@@ -45,13 +47,38 @@ export default function HomePage() {
   const iWantToPlay = myDates.includes(selectedDate);
   const isToday = selectedDate === toKey(today);
 
+  // 次の予定：確定した声かけ + 参加予定のイベント（日付順・最大3件）
+  const todayKey = toKey(today);
+  const plans = [
+    ...invitations
+      .filter((x) => x.status === "accepted" && x.date >= todayKey)
+      .map((x) => {
+        const p = PLAYERS.find((pl) => pl.id === x.playerId);
+        return {
+          key: x.id,
+          date: x.date,
+          href: `/players/${x.playerId}`,
+          title: `${p?.name ?? ""}さんとテニス`,
+          sub: TIME_SLOTS.filter((t) => t.id === x.timeSlot).map((t) => `${t.label} ${t.range}`)[0] ?? "",
+        };
+      }),
+    ...EVENTS.filter((e) => joinedEvents.includes(e.id)).map((e) => ({
+      key: e.id,
+      date: offsetToKey(e.dayOffset, today),
+      href: `/events/${e.id}`,
+      title: e.title,
+      sub: e.time,
+    })),
+  ]
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(0, 3);
+  const upcomingEvents = [...EVENTS].sort((a, b) => a.dayOffset - b.dayOffset).slice(0, 3);
+
   return (
     <>
       <header className="sticky top-0 z-30 flex h-14 items-center justify-between bg-cream/95 px-5 backdrop-blur">
         <Logo />
-        <button aria-label="お知らせ" className="flex h-10 w-10 items-center justify-center rounded-full text-court">
-          <Bell className="h-5 w-5" />
-        </button>
+        <NotificationBell />
       </header>
 
       <main className="space-y-8 px-5 pb-28 pt-2">
@@ -74,6 +101,33 @@ export default function HomePage() {
             {request ? "プレー希望を編集する" : "プレー意欲を登録する"}
           </Link>
         </section>
+
+        {/* 次の予定 */}
+        {ready && plans.length > 0 && (
+          <section>
+            <div className="mb-3 flex items-end justify-between">
+              <h2 className="font-serif text-xl font-semibold text-court">Next Up</h2>
+              <span className="text-xs text-ink-muted">次の予定</span>
+            </div>
+            <ul className="divide-y divide-line rounded-2xl border border-line bg-white">
+              {plans.map((plan) => (
+                <li key={plan.key}>
+                  <Link href={plan.href} className="flex items-center gap-3 px-4 py-3 active:bg-cream/60">
+                    <CalendarCheck className="h-4 w-4 shrink-0 text-court" />
+                    <span className="w-[72px] shrink-0 text-xs font-medium text-court">
+                      {formatShort(fromKey(plan.date))}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm">{plan.title}</span>
+                      <span className="block text-[11px] text-ink-muted">{plan.sub}</span>
+                    </span>
+                    <ChevronRight className="h-4 w-4 shrink-0 text-ink-muted" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         {/* カレンダー + プレーしたい人 */}
         <section>
@@ -122,13 +176,16 @@ export default function HomePage() {
         <section>
           <div className="mb-3 flex items-end justify-between">
             <h2 className="font-serif text-xl font-semibold text-court">Upcoming Events</h2>
-            <button className="flex items-center text-xs text-ink-muted">
+            <Link href="/events" className="flex items-center text-xs text-ink-muted">
               すべて見る
               <ChevronRight className="h-4 w-4" />
-            </button>
+            </Link>
           </div>
           <div className="space-y-3">
-            {ready && EVENTS.map((e) => <EventCard key={e.id} event={e} today={today} />)}
+            {ready &&
+              upcomingEvents.map((e) => (
+                <EventCard key={e.id} event={e} today={today} joined={joinedEvents.includes(e.id)} />
+              ))}
           </div>
         </section>
       </main>

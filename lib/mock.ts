@@ -111,10 +111,15 @@ export const EVENTS: CourtEvent[] = [
     dayOffset: 2,
     time: "19:00–21:00",
     venue: "代々木公園テニスコート",
+    area: "shinjuku",
     level: "中級",
     capacity: 8,
     joined: 6,
     fee: 1500,
+    organizer: "中村 遼",
+    description:
+      "仕事終わりに集まるダブルス中心の会です。ペアはその場でローテーション。終わったあとは近くで軽く一杯行ける人だけどうぞ。",
+    bring: ["ラケット", "テニスシューズ", "飲み物"],
   },
   {
     id: "e2",
@@ -122,10 +127,15 @@ export const EVENTS: CourtEvent[] = [
     dayOffset: 5,
     time: "8:00–10:00",
     venue: "有明テニスの森",
+    area: "ariake",
     level: "初中級",
     capacity: 12,
     joined: 7,
     fee: 1200,
+    organizer: "高橋 健太",
+    description:
+      "日曜の朝、ラリーと簡単な練習メニューで汗をかきましょう。久しぶりの方・初参加の方も歓迎です。ボールは主催者が用意します。",
+    bring: ["ラケット", "テニスシューズ", "タオル"],
   },
   {
     id: "e3",
@@ -133,9 +143,53 @@ export const EVENTS: CourtEvent[] = [
     dayOffset: 13,
     time: "14:00–17:00",
     venue: "駒沢オリンピック公園",
+    area: "meguro",
     level: "どなたでも",
     capacity: 16,
     joined: 15,
     fee: 2500,
+    organizer: "Courtly",
+    description:
+      "ウィンブルドンにちなんで、いちごとクリームを楽しみながらのミックスダブルス交流会。白を基調にした服装でのご参加をおすすめします。",
+    bring: ["ラケット", "白いウェア（推奨）", "テニスシューズ"],
+  },
+  {
+    id: "e4",
+    title: "Morning Singles Ladder",
+    dayOffset: 3,
+    time: "7:00–9:00",
+    venue: "品川区立しながわ区民公園",
+    area: "shinagawa",
+    level: "中上級",
+    capacity: 6,
+    joined: 3,
+    fee: 1000,
+    organizer: "小林 翔",
+    description: "始業前のシングルス。1ゲームマッチで相手を入れ替えながら回します。レベル目安はNTRP 3.5以上。",
+    bring: ["ラケット", "テニスシューズ"],
+  },
+  {
+    id: "e5",
+    title: "Beginners' Welcome",
+    dayOffset: 7,
+    time: "10:00–12:00",
+    venue: "砧公園ファミリーパーク",
+    area: "setagaya",
+    level: "初級",
+    capacity: 10,
+    joined: 4,
+    fee: 1000,
+    organizer: "山本 真由",
+    description:
+      "テニスを始めたばかり・久しぶりの方向けの会。フォアとバックのラリーをゆっくり練習します。ラケットの貸し出しもあります（要相談）。",
+    bring: ["動きやすい服装", "運動靴", "飲み物"],
   },
 ];
+
+export const findEvent = (id: string) => EVENTS.find((e) => e.id === id);
+
+/** 返信の文面（モック） */
+export function mockReply(playerName: string): string {
+  const first = playerName.split(" ")[0];
+  return `声をかけてくれてありがとうございます！ぜひご一緒させてください。当日はよろしくお願いします。（${first}）`;
+}

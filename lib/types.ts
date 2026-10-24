@@ -38,6 +38,10 @@ export type CourtEvent = {
   capacity: number;
   joined: number;
   fee: number;
+  area: Area;
+  organizer: string;
+  description: string;
+  bring: string[];
 };
 
 export type PlayRequest = {
@@ -57,4 +61,9 @@ export type Invitation = {
   timeSlot: TimeSlot;
   message: string;
   createdAt: string;
+  status: InvitationStatus;
+  reply?: string;
+  repliedAt?: string;
 };
+
+export type InvitationStatus = "pending" | "accepted";

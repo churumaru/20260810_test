@@ -37,3 +37,12 @@ export function formatJa(d: Date): string {
 export function formatShort(d: Date): string {
   return `${d.getMonth() + 1}/${d.getDate()}（${weekdayJa(d)}）`;
 }
+
+/** 「たった今」「5分前」などの相対表記 */
+export function timeAgo(iso: string, now = new Date()): string {
+  const sec = Math.floor((now.getTime() - new Date(iso).getTime()) / 1000);
+  if (sec < 60) return "たった今";
+  if (sec < 3600) return `${Math.floor(sec / 60)}分前`;
+  if (sec < 86400) return `${Math.floor(sec / 3600)}時間前`;
+  return `${Math.floor(sec / 86400)}日前`;
+}

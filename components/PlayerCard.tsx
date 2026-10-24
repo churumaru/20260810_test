@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { CheckCheck, ChevronRight, Clock, MapPin, MessageCircle } from "lucide-react";
+import { CheckCheck, ChevronRight, Clock, Hourglass, MapPin, MessageCircle } from "lucide-react";
 import { areaLabel, timeSlotLabel } from "@/lib/constants";
 import type { Player } from "@/lib/types";
 import { useStore } from "@/lib/store";
@@ -12,7 +12,7 @@ import { InviteSheet } from "./InviteSheet";
 export function PlayerCard({ player, date }: { player: Player; date?: string }) {
   const { invitationFor } = useStore();
   const [open, setOpen] = useState(false);
-  const invited = Boolean(invitationFor(player.id));
+  const invitation = invitationFor(player.id);
 
   return (
     <article className="rounded-2xl border border-line bg-white">
@@ -45,13 +45,21 @@ export function PlayerCard({ player, date }: { player: Player; date?: string }) 
             <span className="truncate">{player.areas.map(areaLabel).join(" / ")}</span>
           </p>
         </div>
-        {invited ? (
+        {invitation?.status === "accepted" ? (
+          <Link
+            href={`/players/${player.id}`}
+            className="flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-lawn px-3.5 text-xs font-bold text-court"
+          >
+            <CheckCheck className="h-3.5 w-3.5" />
+            確定
+          </Link>
+        ) : invitation ? (
           <button
             onClick={() => setOpen(true)}
             className="flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-lawn-light px-3.5 text-xs font-medium text-court"
           >
-            <CheckCheck className="h-3.5 w-3.5" />
-            声かけ済み
+            <Hourglass className="h-3.5 w-3.5" />
+            返事待ち
           </button>
         ) : (
           <button

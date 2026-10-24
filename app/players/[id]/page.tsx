@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { ChevronLeft, Clock, Home, MapPin, MessageCircle, Pencil, Trophy } from "lucide-react";
 import { IntentBadge } from "@/components/IntentBadge";
+import { InvitationBadge } from "@/components/InvitationBadge";
 import { InviteSheet } from "@/components/InviteSheet";
 import { PLAY_STYLES, areaLabel, timeSlotLabel } from "@/lib/constants";
 import { formatJa, fromKey } from "@/lib/date";
@@ -15,7 +16,7 @@ import { useStore } from "@/lib/store";
 export default function PlayerPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const { ready, request, invitationFor } = useStore();
+  const { ready, request, invitationFor, cancelInvitation, showToast } = useStore();
   const [open, setOpen] = useState(false);
 
   const player = findPlayer(id);
@@ -124,36 +125,69 @@ export default function PlayerPage() {
                 <span className="font-medium text-court">
                   {formatJa(fromKey(invitation.date))}・{timeSlotLabel(invitation.timeSlot)}
                 </span>
-                <span className="rounded-full bg-cream px-2 py-0.5 text-ink-muted">返事待ち</span>
+                <InvitationBadge status={invitation.status} />
               </div>
-              <p className="mt-3 rounded-2xl rounded-tr-sm bg-court px-3.5 py-2.5 text-[13px] leading-relaxed text-white">
-                {invitation.message}
-              </p>
+              <div className="mt-3 flex justify-end">
+                <p className="max-w-[85%] rounded-2xl rounded-tr-sm bg-court px-3.5 py-2.5 text-[13px] leading-relaxed text-white">
+                  {invitation.message}
+                </p>
+              </div>
+              {invitation.status === "accepted" ? (
+                <div className="mt-2 flex items-end gap-2">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-court-light font-serif text-[10px] font-semibold text-court">
+                    {player.initials}
+                  </span>
+                  <p className="max-w-[80%] rounded-2xl rounded-bl-sm bg-cream px-3.5 py-2.5 text-[13px] leading-relaxed ring-1 ring-line">
+                    {invitation.reply}
+                  </p>
+                </div>
+              ) : (
+                <p className="mt-3 text-center text-[11px] text-ink-muted">
+                  返事が届くとお知らせします（デモでは数秒で届きます）
+                </p>
+              )}
             </div>
+            {invitation.status === "pending" && (
+              <button
+                onClick={() => {
+                  cancelInvitation(player.id);
+                  showToast("声かけを取り消しました");
+                }}
+                className="mt-3 w-full py-2 text-center text-xs text-ink-muted underline underline-offset-4"
+              >
+                声かけを取り消す
+              </button>
+            )}
           </section>
         )}
       </main>
 
       <div className="pb-safe fixed inset-x-0 bottom-0 z-40 mx-auto max-w-md border-t border-line bg-cream/95 px-5 pt-3 backdrop-blur">
-        <button
-          onClick={() => setOpen(true)}
-          disabled={!ready}
-          className={`mb-3 flex h-12 w-full items-center justify-center gap-2 rounded-full text-sm font-bold active:opacity-90 ${
-            invitation ? "border border-court bg-white text-court" : "bg-court text-white"
-          }`}
-        >
-          {invitation ? (
-            <>
-              <Pencil className="h-4 w-4" />
-              声かけの内容を変更する
-            </>
-          ) : (
-            <>
-              <MessageCircle className="h-4 w-4" />
-              声をかける
-            </>
-          )}
-        </button>
+        {invitation?.status === "accepted" ? (
+          <div className="mb-3 flex h-12 items-center justify-center gap-2 rounded-full bg-lawn text-sm font-bold text-court">
+            {formatJa(fromKey(invitation.date))}・{timeSlotLabel(invitation.timeSlot)}に決定
+          </div>
+        ) : (
+          <button
+            onClick={() => setOpen(true)}
+            disabled={!ready}
+            className={`mb-3 flex h-12 w-full items-center justify-center gap-2 rounded-full text-sm font-bold active:opacity-90 ${
+              invitation ? "border border-court bg-white text-court" : "bg-court text-white"
+            }`}
+          >
+            {invitation ? (
+              <>
+                <Pencil className="h-4 w-4" />
+                声かけの内容を変更する
+              </>
+            ) : (
+              <>
+                <MessageCircle className="h-4 w-4" />
+                声をかける
+              </>
+            )}
+          </button>
+        )}
       </div>
 
       {ready && <InviteSheet player={player} open={open} onClose={() => setOpen(false)} />}

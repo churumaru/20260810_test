@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, Flame, Leaf } from "lucide-react";
+import { Flame, Leaf } from "lucide-react";
 import { Chip } from "@/components/Chip";
+import { PageHeader } from "@/components/PageHeader";
 import { AREAS, INTENTS, TIME_SLOTS } from "@/lib/constants";
 import { toKey, upcomingDays, weekdayJa } from "@/lib/date";
 import { useStore } from "@/lib/store";
@@ -61,13 +61,7 @@ export default function RegisterPage() {
 
   return (
     <>
-      <header className="sticky top-0 z-30 flex h-14 items-center bg-cream/95 px-2 backdrop-blur">
-        <Link href="/" aria-label="戻る" className="flex h-10 w-10 items-center justify-center text-court">
-          <ChevronLeft className="h-6 w-6" />
-        </Link>
-        <h1 className="flex-1 text-center text-[15px] font-bold">プレー希望の登録</h1>
-        <span className="w-10" />
-      </header>
+      <PageHeader title="プレー希望の登録" />
 
       <main className="space-y-8 px-5 pb-40 pt-3">
         <section>

@@ -6,10 +6,10 @@ import { CalendarDays, Home, Plus, Search, User } from "lucide-react";
 
 const ITEMS = [
   { href: "/", label: "ホーム", icon: Home },
-  { href: "#", label: "さがす", icon: Search },
+  { href: "/search", label: "さがす", icon: Search },
   { href: "/register", label: "登録", icon: Plus, primary: true },
-  { href: "#", label: "イベント", icon: CalendarDays },
-  { href: "#", label: "マイページ", icon: User },
+  { href: "/events", label: "イベント", icon: CalendarDays },
+  { href: "/me", label: "マイページ", icon: User },
 ];
 
 export function BottomNav() {
@@ -18,8 +18,7 @@ export function BottomNav() {
     <nav className="pb-safe fixed inset-x-0 bottom-0 z-40 mx-auto max-w-md border-t border-line bg-cream/95 backdrop-blur">
       <ul className="grid h-16 grid-cols-5">
         {ITEMS.map(({ href, label, icon: Icon, primary }) => {
-          const active = href !== "#" && pathname === href;
-          const disabled = href === "#";
+          const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
           if (primary) {
             return (
               <li key={label} className="flex items-center justify-center">
@@ -37,11 +36,10 @@ export function BottomNav() {
             <li key={label}>
               <Link
                 href={href}
-                aria-disabled={disabled}
-                onClick={disabled ? (e) => e.preventDefault() : undefined}
+                aria-current={active ? "page" : undefined}
                 className={`flex h-full flex-col items-center justify-center gap-1 text-[10px] ${
                   active ? "text-court" : "text-ink-muted"
-                } ${disabled ? "opacity-60" : ""}`}
+                }`}
               >
                 <Icon className="h-5 w-5" strokeWidth={active ? 2.25 : 1.75} />
                 {label}
