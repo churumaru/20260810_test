@@ -1,10 +1,11 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import type { PlayRequest } from "./types";
+import type { Invitation, PlayRequest } from "./types";
 import { toKey } from "./date";
 
 const STORAGE_KEY = "courtly:play-request";
+const INVITES_KEY = "courtly:invitations";
 
 type StoreValue = {
   /** localStorage の読み込みが終わったか（SSRとの表示ズレ防止） */
@@ -12,6 +13,9 @@ type StoreValue = {
   request: PlayRequest | null;
   saveRequest: (req: Omit<PlayRequest, "updatedAt">) => void;
   clearRequest: () => void;
+  invitations: Invitation[];
+  sendInvitation: (inv: Omit<Invitation, "id" | "createdAt">) => void;
+  invitationFor: (playerId: string) => Invitation | undefined;
   selectedDate: string;
   setSelectedDate: (key: string) => void;
   toast: string | null;
@@ -25,11 +29,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [request, setRequest] = useState<PlayRequest | null>(null);
   const [selectedDate, setSelectedDate] = useState(() => toKey(new Date()));
   const [toast, setToast] = useState<string | null>(null);
+  const [invitations, setInvitations] = useState<Invitation[]>([]);
 
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) setRequest(JSON.parse(raw) as PlayRequest);
+      const invites = localStorage.getItem(INVITES_KEY);
+      if (invites) setInvitations(JSON.parse(invites) as Invitation[]);
     } catch {
       // 保存領域が使えない環境ではメモリ上のみで動かす
     }
@@ -63,18 +70,41 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     persist(null);
   }, []);
 
+  const sendInvitation = useCallback((inv: Omit<Invitation, "id" | "createdAt">) => {
+    setInvitations((prev) => {
+      const next = [
+        ...prev.filter((x) => x.playerId !== inv.playerId),
+        { ...inv, id: `inv-${Date.now()}`, createdAt: new Date().toISOString() },
+      ];
+      try {
+        localStorage.setItem(INVITES_KEY, JSON.stringify(next));
+      } catch {
+        // noop
+      }
+      return next;
+    });
+  }, []);
+
+  const invitationFor = useCallback(
+    (playerId: string) => invitations.find((x) => x.playerId === playerId),
+    [invitations],
+  );
+
   const value = useMemo(
     () => ({
       ready,
       request,
       saveRequest,
       clearRequest,
+      invitations,
+      sendInvitation,
+      invitationFor,
       selectedDate,
       setSelectedDate,
       toast,
       showToast: setToast,
     }),
-    [ready, request, saveRequest, clearRequest, selectedDate, toast],
+    [ready, request, saveRequest, clearRequest, invitations, sendInvitation, invitationFor, selectedDate, toast],
   );
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;

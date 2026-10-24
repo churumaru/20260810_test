@@ -106,7 +106,7 @@ export default function HomePage() {
 
           <div className="mt-3 space-y-3">
             {ready && iWantToPlay && request && <MyRequestCard request={request} />}
-            {ready && players.map((p) => <PlayerCard key={p.id} player={p} />)}
+            {ready && players.map((p) => <PlayerCard key={p.id} player={p} date={selectedDate} />)}
             {ready && players.length === 0 && !iWantToPlay && (
               <div className="rounded-2xl border border-dashed border-line px-4 py-8 text-center">
                 <p className="text-sm text-ink-muted">この日はまだ誰も登録していません。</p>

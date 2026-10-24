@@ -1,4 +1,4 @@
-import type { Area, Intent, TimeSlot } from "./types";
+import type { Area, Intent, PlayStyle, TimeSlot } from "./types";
 
 export const TIME_SLOTS: { id: TimeSlot; label: string; range: string }[] = [
   { id: "morning", label: "朝", range: "6–9時" },
@@ -33,3 +33,16 @@ export const INTENTS: { id: Intent; label: string; short: string; description: s
 
 export const timeSlotLabel = (id: TimeSlot) => TIME_SLOTS.find((t) => t.id === id)?.label ?? id;
 export const areaLabel = (id: Area) => AREAS.find((a) => a.id === id)?.label ?? id;
+
+export const PLAY_STYLES: Record<PlayStyle, string> = {
+  rally: "ラリー",
+  doubles: "ダブルス",
+  singles: "シングルス",
+  match: "試合形式",
+};
+
+export const MESSAGE_TEMPLATES = [
+  "はじめまして！よければ一緒にラリーしませんか？",
+  "ダブルスのメンバーを探しています。ご一緒できたら嬉しいです。",
+  "試合形式で1セットいかがですか？",
+];

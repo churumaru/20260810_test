@@ -12,6 +12,9 @@ export const PLAYERS: Player[] = [
     timeSlots: ["evening"],
     areas: ["shibuya", "meguro"],
     comment: "仕事終わりにラリー中心で。",
+    experience: "テニス歴8年",
+    styles: ["rally", "doubles"],
+    homeCourt: "駒沢オリンピック公園",
   },
   {
     id: "p2",
@@ -23,6 +26,9 @@ export const PLAYERS: Player[] = [
     timeSlots: ["morning", "forenoon"],
     areas: ["ariake", "shinagawa"],
     comment: "朝活テニス。ダブルスの相手募集中です。",
+    experience: "テニス歴12年・学生時代は部活",
+    styles: ["doubles", "match"],
+    homeCourt: "有明テニスの森",
   },
   {
     id: "p3",
@@ -34,6 +40,9 @@ export const PLAYERS: Player[] = [
     timeSlots: ["afternoon", "evening"],
     areas: ["setagaya"],
     comment: "Casual hitting, Japanese/English OK.",
+    experience: "テニス歴3年",
+    styles: ["rally"],
+    homeCourt: "砧公園",
   },
   {
     id: "p4",
@@ -45,6 +54,9 @@ export const PLAYERS: Player[] = [
     timeSlots: ["evening"],
     areas: ["shinjuku", "shibuya"],
     comment: "試合形式ができると嬉しいです。",
+    experience: "テニス歴15年・大会出場あり",
+    styles: ["singles", "match"],
+    homeCourt: "代々木公園",
   },
   {
     id: "p5",
@@ -56,6 +68,9 @@ export const PLAYERS: Player[] = [
     timeSlots: ["forenoon", "afternoon"],
     areas: ["setagaya", "meguro"],
     comment: "再開して半年。ゆるく楽しく。",
+    experience: "テニス歴1年（ブランク明け）",
+    styles: ["rally", "doubles"],
+    homeCourt: "駒沢オリンピック公園",
   },
   {
     id: "p6",
@@ -67,6 +82,9 @@ export const PLAYERS: Player[] = [
     timeSlots: ["morning"],
     areas: ["shinagawa"],
     comment: "始業前の1時間だけでも。",
+    experience: "テニス歴6年",
+    styles: ["rally", "singles"],
+    homeCourt: "品川区立テニスコート",
   },
   {
     id: "p7",
@@ -78,8 +96,13 @@ export const PLAYERS: Player[] = [
     timeSlots: ["afternoon"],
     areas: ["ariake"],
     comment: "有明でシングルスしたいです。",
+    experience: "テニス歴5年",
+    styles: ["singles"],
+    homeCourt: "有明テニスの森",
   },
 ];
+
+export const findPlayer = (id: string) => PLAYERS.find((p) => p.id === id);
 
 export const EVENTS: CourtEvent[] = [
   {

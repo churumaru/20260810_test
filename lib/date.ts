@@ -33,3 +33,7 @@ export const weekdayEn = (d: Date) => WEEKDAYS_EN[d.getDay()];
 export function formatJa(d: Date): string {
   return `${d.getMonth() + 1}月${d.getDate()}日（${weekdayJa(d)}）`;
 }
+
+export function formatShort(d: Date): string {
+  return `${d.getMonth() + 1}/${d.getDate()}（${weekdayJa(d)}）`;
+}

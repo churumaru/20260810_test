@@ -5,9 +5,11 @@ type Props = {
   onClick: () => void;
   children: React.ReactNode;
   className?: string;
+  /** 選択時のチェックマーク（幅が狭いチップでは非表示に） */
+  showCheck?: boolean;
 };
 
-export function Chip({ selected, onClick, children, className = "" }: Props) {
+export function Chip({ selected, onClick, children, className = "", showCheck = true }: Props) {
   return (
     <button
       type="button"
@@ -17,7 +19,7 @@ export function Chip({ selected, onClick, children, className = "" }: Props) {
         selected ? "border-court bg-court text-white" : "border-line bg-white text-ink active:bg-court-light"
       } ${className}`}
     >
-      {selected && <Check className="h-3.5 w-3.5 shrink-0 text-lawn" />}
+      {selected && showCheck && <Check className="h-3.5 w-3.5 shrink-0 text-lawn" />}
       {children}
     </button>
   );

@@ -21,7 +21,12 @@ export type Player = {
   timeSlots: TimeSlot[];
   areas: Area[];
   comment: string;
+  experience: string;
+  styles: PlayStyle[];
+  homeCourt: string;
 };
+
+export type PlayStyle = "rally" | "doubles" | "singles" | "match";
 
 export type CourtEvent = {
   id: string;
@@ -42,4 +47,14 @@ export type PlayRequest = {
   timeSlots: TimeSlot[];
   areas: Area[];
   updatedAt: string;
+};
+
+export type Invitation = {
+  id: string;
+  playerId: string;
+  /** YYYY-MM-DD */
+  date: string;
+  timeSlot: TimeSlot;
+  message: string;
+  createdAt: string;
 };
